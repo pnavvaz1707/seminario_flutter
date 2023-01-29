@@ -140,11 +140,13 @@ class _MyHomePageState extends State<MyHomePage> {
         );
         break;
       case 1:
-        pagina = Placeholder();
+        pagina = PaginaPrincipal(favoritos: favoritos);
         break;
       default:
-        throw UnimplementedError('no widget for $opcionSeleccionada');
+        throw UnimplementedError(
+            'No hay widget para la opción  $opcionSeleccionada');
     }
+
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
         appBar: AppBar(
@@ -186,5 +188,40 @@ class _MyHomePageState extends State<MyHomePage> {
         ), // This trailing comma makes auto-formatting nicer for build methods.
       );
     });
+  }
+}
+
+class PaginaPrincipal extends StatelessWidget {
+  const PaginaPrincipal({super.key, this.favoritos});
+
+  final favoritos;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text(
+              "Tienes ${favoritos.length} palabras en favoritos",
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+            ),
+          ),
+          for (WordPair par in favoritos)
+            ListTile(
+              leading: const Icon(Icons.favorite, color: Colors.red),
+              title: Text(
+                par.asPascalCase,
+                style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+              ),
+            )
+        ],
+      ),
+    );
   }
 }

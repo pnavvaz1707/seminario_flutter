@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:english_words/english_words.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -22,9 +23,11 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade900),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(
+        title: "Seminario Flutter",
+      ),
     );
   }
 }
@@ -48,16 +51,28 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  var opcionSeleccionada = 0;
+  var palabraActual = WordPair.random();
+  var favoritos = <WordPair>[];
 
-  void _incrementCounter() {
+  void siguientePalabra() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
+      palabraActual = WordPair.random();
+    });
+  }
+
+  void agregarFavoritos() {
+    setState(() {
+      if (favoritos.contains(palabraActual)) {
+        favoritos.remove(palabraActual);
+      } else {
+        favoritos.add(palabraActual);
+      }
     });
   }
 
@@ -69,16 +84,16 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
+    IconData iconoFavorito;
+    if (favoritos.contains(palabraActual)) {
+      iconoFavorito = Icons.favorite;
+    } else {
+      iconoFavorito = Icons.favorite_border;
+    }
+    Widget pagina;
+    switch (opcionSeleccionada) {
+      case 0:
+        pagina = Column(
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
           // children horizontally, and tries to be as tall as its parent.
@@ -95,21 +110,81 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            Card(
+              color: Theme.of(context).colorScheme.inverseSurface,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Text(
+                  palabraActual.asPascalCase,
+                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                ),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            const SizedBox(height: 20),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                  onPressed: agregarFavoritos,
+                  child: Icon(iconoFavorito),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                    onPressed: siguientePalabra,
+                    child: const Text("Siguiente")),
+              ],
+            ),
+          ],
+        );
+        break;
+      case 1:
+        pagina = Placeholder();
+        break;
+      default:
+        throw UnimplementedError('no widget for $opcionSeleccionada');
+    }
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        appBar: AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title),
+        ),
+        body: Row(
+          children: [
+            SafeArea(
+              child: NavigationRail(
+                extended: constraints.maxWidth >= 600,
+                destinations: const [
+                  NavigationRailDestination(
+                      icon: Icon(Icons.home), label: Text("Inicio")),
+                  NavigationRailDestination(
+                      icon: Icon(Icons.favorite), label: Text("Favoritos")),
+                ],
+                selectedIndex: opcionSeleccionada,
+                onDestinationSelected: (value) {
+                  setState(() {
+                    opcionSeleccionada = value;
+                  });
+                },
+              ),
+            ),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                child: pagina,
+              ),
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        floatingActionButton: FloatingActionButton(
+          onPressed: siguientePalabra,
+          tooltip: 'Increment',
+          child: const Icon(Icons.delete),
+        ), // This trailing comma makes auto-formatting nicer for build methods.
+      );
+    });
   }
 }

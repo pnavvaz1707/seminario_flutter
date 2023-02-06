@@ -64,6 +64,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
             padding: const EdgeInsets.all(15.0),
             child: Text(
               palabraActual.asPascalCase,
+              //"${palabraActual.asPascalCase} num ${widget.historial.length}",
               style: Theme.of(context).textTheme.displayMedium!.copyWith(
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),
@@ -83,6 +84,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                 onPressed: siguientePalabra, child: const Text("Siguiente")),
           ],
         ),
+        const Spacer(flex: 2),
       ],
     );
   }

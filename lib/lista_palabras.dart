@@ -42,7 +42,7 @@ class _HistorialPalabrasState extends State<HistorialPalabras> {
       blendMode: BlendMode.dstIn,
       child: AnimatedList(
         reverse: true,
-        padding: const EdgeInsets.only(top: 100),
+        padding: const EdgeInsets.only(top: 20),
         initialItemCount: widget.historial.length,
         itemBuilder: (context, index, animation) {
           final palabraSel = widget.historial[index];

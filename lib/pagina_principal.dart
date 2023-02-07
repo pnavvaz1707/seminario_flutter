@@ -38,6 +38,9 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
       } else {
         widget.favoritos.add(palabraSel!);
       }
+      if (!widget.historial.contains(palabraActual)) {
+        widget.historial.insert(0, palabraActual);
+      }
     });
   }
 

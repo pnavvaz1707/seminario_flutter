@@ -50,6 +50,7 @@ class _CuerpoAplicacionState extends State<CuerpoAplicacion> {
                       icon: Icon(Icons.home), label: Text("Inicio")),
                   NavigationRailDestination(
                       icon: Icon(Icons.favorite), label: Text("Favoritos")),
+
                 ],
                 selectedIndex: opcionSeleccionada,
                 onDestinationSelected: (value) {
